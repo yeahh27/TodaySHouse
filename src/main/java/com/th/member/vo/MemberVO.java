@@ -7,9 +7,7 @@ import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Value;
 
-import com.th.common.dao.support.Types;
 import com.th.member.validator.MemberValidator;
-
 
 public class MemberVO {
 

@@ -5,7 +5,6 @@ import javax.validation.constraints.NotEmpty;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.th.common.dao.support.Types;
 import com.th.member.vo.MemberVO;
 
 public class ArticleVO {
