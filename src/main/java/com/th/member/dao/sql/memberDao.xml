@@ -12,6 +12,7 @@
 				    			, SALT
 				    			, POINT
 				    			, CHAT_OK
+				    			, DELETE_ART_COUNT
 		) VALUES ( 
 								#{email}
 								, #{password}
@@ -19,6 +20,7 @@
 								, #{salt}
 								, 100
 								, #{chatOk}
+								, #{deleteArtCount}
 		)
   	</insert>
   	

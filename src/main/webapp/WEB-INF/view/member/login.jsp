@@ -27,13 +27,14 @@
 </script>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/view/common/menu.jsp" />
 	<h1>LOGIN</h1>
 	<form:form id="loginData" modelAttribute="memberVO" >
 	<div>
-		<input type="email" name="email" name="email" placeholder="EMAIL" value="" />
+		<input type="email" name="email" id="email" placeholder="EMAIL" value="" />
 	</div>
 	<div>
-		<input type="password" name="password" name="password" placeholder="PASSWORD" value="" />
+		<input type="password" name="password" id="password" placeholder="PASSWORD" value="" />
 	</div>
 	<div>
 		<input type="button" class="loginBtn" value="로그인" />

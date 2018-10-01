@@ -27,7 +27,6 @@ public class GlobalExceptionHandler {
 	
 	@ExceptionHandler(RuntimeException.class)
 	public String RuntimeExceptionHandler(RuntimeException e) throws UnsupportedEncodingException {
-		e.printStackTrace();
 		
 		if ( e instanceof PolicyViolationException) {
 			PolicyViolationException pve = (PolicyViolationException) e;

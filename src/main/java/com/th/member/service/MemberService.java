@@ -8,7 +8,8 @@ public interface MemberService {
 
 	public boolean registMember(MemberVO memberVO);
 	
-	public MemberVO loginMember(MemberVO memberVO, HttpSession session);
+	//public MemberVO loginMember(MemberVO memberVO, HttpSession session);
+	public boolean loginMember(MemberVO memberVO, HttpSession session);
 	public MemberVO loginMember(MemberVO memberVO);
 	
 	public int updatePoint(String email, int point);

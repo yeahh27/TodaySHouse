@@ -8,7 +8,6 @@
 </head>
 <body>
 	<jsp:include page="/WEB-INF/view/common/menu.jsp" />
-	<h1>HOME</h1>
-	<a href="/TodaysHouse/1/">List1</a>
+	<h1>DETAIL</h1>
 </body>
 </html>

@@ -13,10 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.servlet.ModelAndView;
 
-import com.th.common.session.Session;
-import com.th.common.util.SHA256Util;
 import com.th.member.service.MemberService;
 import com.th.member.validator.MemberValidator;
 import com.th.member.vo.MemberVO;
@@ -69,12 +66,11 @@ public class MemberController {
 		}
 		
 		boolean isBlockAccount = this.memberService.isBlockUser(memberVO.getEmail());
-		MemberVO loginMemberVO = null;
+		boolean isLoginSuccess = this.memberService.loginMember(memberVO, session);
 		
 		if(!isBlockAccount) {
-			loginMemberVO = this.memberService.loginMember(memberVO, session);
 			
-			if(loginMemberVO == null) {
+			if(!isLoginSuccess) {
 				this.memberService.increaseLoginFailCount(memberVO.getEmail());
 				result.put("status", false);
 			} else {
@@ -85,8 +81,12 @@ public class MemberController {
 			result.put("status", false);
 		}
 		
-		session.setAttribute(Session.MEMBER , loginMemberVO);
-		
 		return result;
+	}
+	
+	@GetMapping("/member/logout")
+	public String doMemberLogoutAction(HttpSession session) {
+		session.invalidate();	
+		return "redirect:/member/login";
 	}
 }

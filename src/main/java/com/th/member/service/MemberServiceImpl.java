@@ -32,18 +32,18 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public MemberVO loginMember(MemberVO memberVO, HttpSession session) {
+	public boolean loginMember(MemberVO memberVO, HttpSession session) {
 		String salt = this.memberDao.getSaltById(memberVO.getEmail());
 		String password = this.getHashedPassword(salt, memberVO.getPassword());
 		
 		memberVO.setPassword(password);
 		
 		MemberVO loginMemberVO = this.memberDao.selectOneMember(memberVO);
-		
+
 		if(loginMemberVO != null) {
 			session.setAttribute(Session.MEMBER, loginMemberVO);
 		}
-		return loginMemberVO;
+		return loginMemberVO != null;
 	}
 	
 	@Override

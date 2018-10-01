@@ -7,8 +7,8 @@
   	
   	<typeAliases>
   		<typeAlias type="com.th.member.vo.MemberVO" alias="MemberVO"/>
-  		<!-- <typeAlias type="com.ktds.board.vo.BoardVO" alias="BoardVO"/>
-  		<typeAlias type="com.ktds.board.vo.BoardSearchVO" alias="BoardSearchVO"/>
+  		<typeAlias type="com.th.article.vo.ArticleVO" alias="ArticleVO"/>
+  		<!-- <typeAlias type="com.ktds.board.vo.BoardSearchVO" alias="BoardSearchVO"/>
   		<typeAlias type="com.ktds.reply.vo.ReplyVO" alias="ReplyVO"/>  -->
   	</typeAliases>
   	

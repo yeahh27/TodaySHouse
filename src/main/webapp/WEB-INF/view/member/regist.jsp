@@ -27,6 +27,7 @@
 </script>
 </head>
 <body>
+	<jsp:include page="/WEB-INF/view/common/menu.jsp" />
 	<h1>REGIST</h1>
 	<form:form id="regData" modelAttribute="memberVO" >
 		<div>
