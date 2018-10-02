@@ -7,6 +7,19 @@
 <script type="text/javascript">
 	$().ready(function() {
 		$(".loginBtn").click(function() {
+			
+			if($("#email").val() == "") {
+				alert("이메일을 입력하세요!");
+				$("#email").focus();
+				return;
+			}
+			
+			if($("#password").val() == "") {
+				alert("비밀번호를 입력하세요!");
+				$("#password").focus();
+				return;
+			}
+			
 			$.post("/TodaysHouse/member/login"
 				   , $("#loginData").serialize()
 				   , function(response) {

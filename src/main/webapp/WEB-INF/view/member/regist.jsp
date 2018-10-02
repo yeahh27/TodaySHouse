@@ -14,6 +14,12 @@
 				return;
 			}
 			
+			if($("#name").val() == "") {
+				alert("이름을 입력하세요!");
+				$("#name").focus();
+				return;
+			}
+			
 			if($("#password").val() == "") {
 				alert("비밀번호를 입력하세요!");
 				$("#password").focus();
@@ -109,6 +115,13 @@
 
 	<h1>REGIST</h1>
 	<form:form id="regData" modelAttribute="memberVO" >
+		<div class="errors">
+			<ul>
+				<li><form:errors path="email" /></li>
+				<li><form:errors path="name" /></li>
+				<li><form:errors path="password" /></li>
+			</ul>
+		</div>
 		<div>
 			<label for="email">Email</label>
 			<input type="email" name="email" id="email" placeholder="EMAIL" value=""/>
