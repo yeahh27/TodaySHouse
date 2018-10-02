@@ -124,4 +124,21 @@
   		AND		A.ARTICLE_ID = #{articleId}
   	</select>
   	
+  	<update id="updateArticle" parameterType="ArticleVO">
+  		UPDATE	ARTICLES
+		SET     TITLE = #{title}
+		        , CONTENT = #{content}
+		        , ORIGIN_FILE_NAME = #{originFileName}
+		        , FILE_NAME = #{fileName}
+		        , MODIFY_DATE = SYSDATE
+		WHERE   BOARD_ID = #{boardId}
+		AND		ARTICLE_ID = #{articleId}
+  	</update>
+  	
+  	<delete id="deleteOneArticle" parameterType="map">
+  		DELETE	
+  		FROM	ARTICLES
+  		WHERE	BOARD_ID = #{boardId}
+  		AND		ARTICLE_ID = #{articleId}
+  	</delete>
   </mapper>

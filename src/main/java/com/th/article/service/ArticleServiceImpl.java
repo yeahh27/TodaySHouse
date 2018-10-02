@@ -30,24 +30,23 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
+	public ArticleVO readOneArticle(int boardId, String articleId) {
+		return this.articleBiz.selectOneArticle(boardId, articleId);
+	}
+	
+	@Override
 	public boolean updateArticle(ArticleVO articleVO) {
 		return this.articleBiz.updateArticle(articleVO) > 0;
 	}
 	
 	@Override
-	public ArticleVO readOneArticle(int boardId, String articleId) {
-		return this.articleBiz.selectOneArticle(boardId, articleId);
-	}
-
-	@Override
 	public ArticleVO readOneArticle(String articleId, MemberVO memberVO) {
 		return null;
 	}
 
-
 	@Override
-	public boolean deleteArticle(String articleId) {
-		return false;
+	public boolean deleteArticle(int boardId, String articleId) {
+		return this.articleBiz.deleteOneArticle(boardId, articleId) > 0;
 	}
 
 }

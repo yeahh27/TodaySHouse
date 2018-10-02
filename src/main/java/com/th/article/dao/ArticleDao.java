@@ -20,6 +20,6 @@ public interface ArticleDao {
 
 	public int updateArticle(ArticleVO articleVO);
 	
-	public int deleteOneArticle(String articleId);
+	public int deleteOneArticle(Map<String, Object> param);
 
 }

@@ -14,9 +14,9 @@ public interface ArticleBiz {
 	//public List<ArticleVO> selectAllArticles(int boardId);
 	public PageExplorer selectAllArticles(ArticleSearchVO articleSearchVO);
 	
+	public ArticleVO selectOneArticle(int boardId, String articleId);
+
 	public int updateArticle(ArticleVO articleVO);
 	
-	public ArticleVO selectOneArticle(int boardId, String articleId);
-	
-	public int deleteOneArticle(String articleId);
+	public int deleteOneArticle(int boardId, String articleId);
 }

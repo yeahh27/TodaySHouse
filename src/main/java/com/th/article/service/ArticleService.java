@@ -21,5 +21,5 @@ public interface ArticleService {
 	
 	public ArticleVO readOneArticle(int boardId, String articleId);
 	
-	public boolean deleteArticle(String articleId);
+	public boolean deleteArticle(int boardId, String articleId);
 }

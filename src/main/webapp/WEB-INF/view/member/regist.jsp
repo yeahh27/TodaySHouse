@@ -63,7 +63,8 @@
 							alert("회원 등록되었습니다.")
 							location.href="/TodaysHouse/member/login"
 						} else {
-							alert("회원등록에 실패하였습니다.")
+							//alert("회원등록에 실패하였습니다.")
+							alert(response.message)
 							location.href="/TodaysHouse/member/regist"
 						}
 					}
@@ -115,13 +116,13 @@
 
 	<h1>REGIST</h1>
 	<form:form id="regData" modelAttribute="memberVO" >
-		<div class="errors">
+		<%-- <div class="errors">
 			<ul>
 				<li><form:errors path="email" /></li>
 				<li><form:errors path="name" /></li>
 				<li><form:errors path="password" /></li>
 			</ul>
-		</div>
+		</div> --%>
 		<div>
 			<label for="email">Email</label>
 			<input type="email" name="email" id="email" placeholder="EMAIL" value=""/>

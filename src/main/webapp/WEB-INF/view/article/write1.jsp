@@ -7,9 +7,29 @@
 
 <script type="text/javascript">
 	$().ready(function() {
+		var actionPath = "";
+		if($("#title").val() == "") {
+			actionPath = "/TodaysHouse/board/${boardId}/articleWrite"
+		} else {
+			actionPath = "/TodaysHouse/board/${boardId}/articleModify/${articleVO.articleId}"
+		}
+		
 		$(".sendBtn").click(function() {
+			
+			if($("#title").val() == "") {
+				alert("제목을 입력하세요!");
+				$("#title").focus();
+				return;
+			}
+			
+			if($("#content").val() == "") {
+				alert("내용을 입력하세요!");
+				$("#content").focus();
+				return;
+			}
+			
 			$("#writeData").attr( {
-				action: "/TodaysHouse/board/${boardId}/articleWrite",
+				action: actionPath,
 	            method: "post",
 	            enctype: "multipart/form-data"
 			} ).submit()
@@ -25,9 +45,15 @@
 	</div>
 	<div>
 		<input type="text" name="title" id="title" placeholder="TITLE" value="${articleVO.title}" />
+		<div class="errors">
+			<form:errors path="title" />
+		</div>
 	</div>
 	<div>
 		<textarea name="content" id="content" placeholder="CONTENT">${articleVO.content}</textarea>
+		<div class="errors">
+			<form:errors path="content" />
+		</div>
 	</div>
 	<div>
 		<input type="file" id="file" name="file" multiple="multiple" placeholder="Choose File"  />

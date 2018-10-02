@@ -52,12 +52,16 @@ public class ArticleBizImpl implements ArticleBiz {
 
 	@Override
 	public int updateArticle(ArticleVO articleVO) {
-		return 0;
+		return this.articleDao.updateArticle(articleVO);
 	}
 
 	@Override
-	public int deleteOneArticle(String articleId) {
-		return 0;
+	public int deleteOneArticle(int boardId, String articleId) {
+		Map<String, Object> param = new HashMap<>();
+		param.put("boardId", boardId);
+		param.put("articleId", articleId);
+		
+		return this.articleDao.deleteOneArticle(param);
 	}
 
 }

@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.Errors;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,6 +43,7 @@ public class MemberController {
 	public Map<String, Object> doMemberRegistAction(@Validated({MemberValidator.Regist.class}) @ModelAttribute MemberVO memberVO, Errors errors) {
 		Map<String, Object> result = new HashMap<>();
 		if(errors.hasErrors()) {
+			result.put("message", errors);
 			result.put("status", false);
 			return result;
 		}
@@ -76,6 +78,7 @@ public class MemberController {
 		Map<String, Object> result = new HashMap<>();
 		
 		if(errors.hasErrors()) {
+			result.put("message", errors);
 			result.put("status", false);
 			return result;
 		}

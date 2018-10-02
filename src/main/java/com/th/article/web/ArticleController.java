@@ -3,9 +3,7 @@ package com.th.article.web;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -62,15 +60,37 @@ public class ArticleController {
 			throw new RuntimeException("잘못된 접근입니다.");
 		}
 		
-		ModelAndView view = new ModelAndView("redirect:/board/"+boardId);
+		ModelAndView view = new ModelAndView("redirect:/board/" + boardId);
 
 		// Validation Annotation이 실패했는지 체크
 		if (errors.hasErrors()) {
-			view.setViewName(boardId + "/articleWrite");		// view path 지정
+			view.setViewName("article/" + boardId);		// view path 지정
 			view.addObject("articleVO", articleVO);
 			return view;
 		}
 		
+		fileUpload(articleVO);
+		
+		MemberVO loginMemberVO = (MemberVO) session.getAttribute(Session.MEMBER);
+		articleVO.setEmail(loginMemberVO.getEmail());
+
+		// XSS
+		XssFilter filter = XssFilter.getInstance("lucy-xss-superset.xml");
+		articleVO.setTitle(filter.doFilter(articleVO.getTitle()));
+		articleVO.setContent(filter.doFilter(articleVO.getContent()));
+		
+		boolean isSuccess = this.articleService.createArticle(articleVO);
+
+		String paramFormat = "IP:%s, Param:%s, Result:%s";
+		logger.debug( String.format(paramFormat, request.getRemoteAddr()
+				, articleVO.getTitle() + ", " + articleVO.getContent() + ", " + articleVO.getEmail() + ", " 
+						+ articleVO.getFileName() + ", " + articleVO.getOriginFileName()
+				, view.getViewName()) );	
+		
+		return view;
+	}
+	
+	private void fileUpload(ArticleVO articleVO) {
 		MultipartFile uploadFile = articleVO.getFile();
 		
 		if(!uploadFile.isEmpty()) {
@@ -98,24 +118,6 @@ public class ArticleController {
 				throw new RuntimeException(e.getMessage(), e);
 			}
 		}
-		
-		MemberVO loginMemberVO = (MemberVO) session.getAttribute(Session.MEMBER);
-		articleVO.setEmail(loginMemberVO.getEmail());
-
-		// XSS
-		XssFilter filter = XssFilter.getInstance("lucy-xss-superset.xml");
-		articleVO.setTitle(filter.doFilter(articleVO.getTitle()));
-		articleVO.setContent(filter.doFilter(articleVO.getContent()));
-		
-		boolean isSuccess = this.articleService.createArticle(articleVO);
-
-		String paramFormat = "IP:%s, Param:%s, Result:%s";
-		logger.debug( String.format(paramFormat, request.getRemoteAddr()
-				, articleVO.getTitle() + ", " + articleVO.getContent() + ", " + articleVO.getEmail() + ", " 
-						+ articleVO.getFileName() + ", " + articleVO.getOriginFileName()
-				, view.getViewName()) );	
-		
-		return view;
 	}
 	
 	@RequestMapping("/board/{boardId}")
@@ -140,6 +142,11 @@ public class ArticleController {
 			logger.info("URL : /board/" + boardId + ", IP : " + request.getRemoteAddr() + ", List Size : " + pageExplorer.getList().size());
 			
 			XssFilter filter = XssFilter.getInstance("lucy-xss-superset.xml");
+			for(Object articleVO : pageExplorer.getList()) {
+				ArticleVO article = (ArticleVO) articleVO;
+				article.setTitle(filter.doFilter(article.getTitle()));
+				article.setContent(filter.doFilter(article.getContent()));
+			}
 			
 			view.addObject("boardId", boardId);
 			view.addObject("articleList", pageExplorer.getList());
@@ -158,11 +165,24 @@ public class ArticleController {
 	}
 	
 	@GetMapping("/board/{boardId}/{articleId}")
-	public ModelAndView viewArticlePage(@PathVariable int boardId, @PathVariable String articleId) {
-		ModelAndView view = new ModelAndView("article/detail" + boardId);
+	public ModelAndView viewArticlePage(@PathVariable int boardId, @PathVariable String articleId, HttpSession session) {
+		ArticleSearchVO articleSearchVO = (ArticleSearchVO) session.getAttribute(Session.SEARCH); 
+		PageExplorer pageExplorer = this.articleService.readAllArticles(articleSearchVO);
 		
-		ArticleVO articleVO = this.articleService.readOneArticle(boardId, articleId);
-		view.addObject("articleVO", articleVO);
+		ModelAndView view = new ModelAndView("article/detail" + boardId);
+
+		if(pageExplorer != null) {
+			
+			XssFilter filter = XssFilter.getInstance("lucy-xss-superset.xml");
+			for(Object articleVO : pageExplorer.getList()) {
+				ArticleVO article = (ArticleVO) articleVO;
+				article.setTitle(filter.doFilter(article.getTitle()));
+				article.setContent(filter.doFilter(article.getContent()));
+			}
+			
+			ArticleVO articleVO = this.articleService.readOneArticle(boardId, articleId);
+			view.addObject("articleVO", articleVO);
+		}
 
 		return view;
 	}
@@ -179,6 +199,61 @@ public class ArticleController {
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException(e.getMessage(), e);
 		}
+	}
+	
+	@GetMapping("/board/{boardId}/articleModify/{articleId}")
+	public ModelAndView viewArticleModifyPage(@PathVariable int boardId, @PathVariable String articleId, HttpSession session) {
+		
+		MemberVO sessionUser = (MemberVO) session.getAttribute(Session.MEMBER);
+		
+		ArticleVO articleVO = this.articleService.readOneArticle(boardId, articleId);
+		String articleUser = articleVO.getEmail();
+		if(!sessionUser.getEmail().equals(articleUser)) {
+			return new ModelAndView("redirect:/board/" + boardId);
+		}
+		
+		ModelAndView view = new ModelAndView("article/write" + boardId);
+		view.addObject("articleVO", articleVO);
+		
+		return view;
+	}
+	
+	@PostMapping("/board/{boardId}/articleModify/{articleId}")
+	public ModelAndView doArticleModifyAction(@PathVariable int boardId, @PathVariable String articleId
+												, @Valid @ModelAttribute ArticleVO articleVO, Errors errors) {
+		ModelAndView view = new ModelAndView("redirect:/board/" + boardId + "/" + articleId);
+		
+		if (errors.hasErrors()) {
+			view.setViewName("article/detail" + boardId);		// view path 지정
+			view.addObject("articleVO", articleVO);
+			return view;
+		}
+		
+		fileUpload(articleVO);
+		
+		XssFilter filter = XssFilter.getInstance("lucy-xss-superset.xml");
+		articleVO.setTitle(filter.doFilter(articleVO.getTitle()));
+		articleVO.setContent(filter.doFilter(articleVO.getContent()));
+		
+		boolean isModifySuccess = this.articleService.updateArticle(articleVO);
+		
+		return view;
+	}
+	
+	@GetMapping("/board/{boardId}/articleDelete/{articleId}")
+	public String doArticleDeleteAction(@PathVariable int boardId, @PathVariable String articleId, HttpSession session) {
+		
+		MemberVO sessionUser = (MemberVO) session.getAttribute(Session.MEMBER);
+		
+		ArticleVO articleVO = this.articleService.readOneArticle(boardId, articleId);
+		String articleUser = articleVO.getEmail();
+		if(!sessionUser.getEmail().equals(articleUser)) {
+			return "redirect:/board/" + boardId;
+		}
+		
+		boolean isDeleteSuccess = this.articleService.deleteArticle(boardId, articleId);
+		
+		return "redirect:/board/" + boardId;
 	}
 
 }

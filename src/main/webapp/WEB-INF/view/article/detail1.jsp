@@ -25,7 +25,10 @@
 	<hr/>
 	
 	<div>
-		<a href="">삭제</a>
+		<c:if test="${articleVO.email eq sessionScope._MEMBER_.email }">
+			<a href="/TodaysHouse/board/${articleVO.boardId}/articleModify/${articleVO.articleId}">수정</a>
+			<a href="/TodaysHouse/board/${articleVO.boardId}/articleDelete/${articleVO.articleId}">삭제</a>
+		</c:if>
 		<a href="/TodaysHouse/board/${articleVO.boardId}">목록</a>
 	</div>
 	

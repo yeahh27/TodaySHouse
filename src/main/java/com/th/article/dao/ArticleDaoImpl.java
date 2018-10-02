@@ -47,12 +47,12 @@ public class ArticleDaoImpl extends SqlSessionDaoSupport implements ArticleDao {
 	
 	@Override
 	public int updateArticle(ArticleVO articleVO) {
-		return 0;
+		return getSqlSession().update("ArticleDao.updateArticle", articleVO);
 	}
 
 	@Override
-	public int deleteOneArticle(String articleId) {
-		return 0;
+	public int deleteOneArticle(Map<String, Object> param) {
+		return getSqlSession().delete("ArticleDao.deleteOneArticle", param);
 	}
 
 }
