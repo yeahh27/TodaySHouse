@@ -2,6 +2,7 @@ package com.th.member.web;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.th.common.session.Session;
 import com.th.member.service.MemberService;
 import com.th.member.validator.MemberValidator;
 import com.th.member.vo.MemberVO;
@@ -92,6 +94,11 @@ public class MemberController {
 			}
 		} else {
 			result.put("status", false);
+		}
+		
+		if(isLoginSuccess) {
+			String token = UUID.randomUUID().toString();
+			session.setAttribute(Session.CSRF_TOKEN, token);
 		}
 		
 		return result;

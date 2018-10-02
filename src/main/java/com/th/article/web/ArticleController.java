@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.nhncorp.lucy.security.xss.XssFilter;
 import com.th.article.service.ArticleService;
 import com.th.article.vo.ArticleSearchVO;
 import com.th.article.vo.ArticleVO;
@@ -55,6 +56,12 @@ public class ArticleController {
 	@PostMapping("/board/{boardId}/articleWrite")
 	public ModelAndView doArticleWriteAction(@PathVariable int boardId, @Valid @ModelAttribute ArticleVO articleVO, Errors errors
 													, HttpSession session, HttpServletRequest request) {
+		
+		String sessionToken = (String) session.getAttribute(Session.CSRF_TOKEN);
+		if(!articleVO.getToken().equals(sessionToken)) {
+			throw new RuntimeException("잘못된 접근입니다.");
+		}
+		
 		ModelAndView view = new ModelAndView("redirect:/board/"+boardId);
 
 		// Validation Annotation이 실패했는지 체크
@@ -95,6 +102,11 @@ public class ArticleController {
 		MemberVO loginMemberVO = (MemberVO) session.getAttribute(Session.MEMBER);
 		articleVO.setEmail(loginMemberVO.getEmail());
 
+		// XSS
+		XssFilter filter = XssFilter.getInstance("lucy-xss-superset.xml");
+		articleVO.setTitle(filter.doFilter(articleVO.getTitle()));
+		articleVO.setContent(filter.doFilter(articleVO.getContent()));
+		
 		boolean isSuccess = this.articleService.createArticle(articleVO);
 
 		String paramFormat = "IP:%s, Param:%s, Result:%s";
@@ -120,16 +132,21 @@ public class ArticleController {
 		articleSearchVO.setBoardId(boardId);
 		PageExplorer pageExplorer = this.articleService.readAllArticles(articleSearchVO);
 
-		logger.info("URL : /board/list, IP : " + request.getRemoteAddr() + ", List Size : " + pageExplorer.getList().size());
-		
 		session.setAttribute(Session.SEARCH, articleSearchVO);
-		
+
 		ModelAndView view = new ModelAndView("article/list" + boardId);
-		view.addObject("boardId", boardId);
-		view.addObject("articleList", pageExplorer.getList());
-		view.addObject("pagenation", pageExplorer.make());
-		view.addObject("size", pageExplorer.getTotalCount());
-		view.addObject("articleSearchVO", articleSearchVO);
+		
+		if(pageExplorer != null) {
+			logger.info("URL : /board/" + boardId + ", IP : " + request.getRemoteAddr() + ", List Size : " + pageExplorer.getList().size());
+			
+			XssFilter filter = XssFilter.getInstance("lucy-xss-superset.xml");
+			
+			view.addObject("boardId", boardId);
+			view.addObject("articleList", pageExplorer.getList());
+			view.addObject("pagenation", pageExplorer.make());
+			view.addObject("size", pageExplorer.getTotalCount());
+			view.addObject("articleSearchVO", articleSearchVO);
+		}
 		
 		return view;
 	}

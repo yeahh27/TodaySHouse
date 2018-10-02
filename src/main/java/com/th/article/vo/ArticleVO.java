@@ -29,6 +29,8 @@ public class ArticleVO {
 	private MultipartFile file;
 	
 	private MemberVO memberVO;
+	
+	private String token;
 
 	public ArticleVO() {
 		this.fileName = "";
@@ -146,13 +148,22 @@ public class ArticleVO {
 	public void setMemberVO(MemberVO memberVO) {
 		this.memberVO = memberVO;
 	}
+	
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
 
 	@Override
 	public String toString() {
 		return "ArticleVO [articleId=" + articleId + ", boardId=" + boardId + ", title=" + title + ", content="
 				+ content + ", email=" + email + ", originFileName=" + originFileName + ", fileName=" + fileName
 				+ ", regDate=" + regDate + ", modifyDate=" + modifyDate + ", viewCount=" + viewCount + ", recommend="
-				+ recommend + ", report=" + report + ", file=" + file + ", memberVO=" + memberVO + "]";
+				+ recommend + ", report=" + report + ", file=" + file + ", memberVO=" + memberVO + ", token=" + token
+				+ "]";
 	}
 
 }

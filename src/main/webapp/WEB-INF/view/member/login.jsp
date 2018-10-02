@@ -24,7 +24,7 @@
 				   , $("#loginData").serialize()
 				   , function(response) {
 					   if(response.status) {
-							alert("로그인되었습니다.")
+							//alert("로그인되었습니다.")
 							location.href="/TodaysHouse/"
 						} else {
 							alert("로그인에 실패하였습니다.")
@@ -38,6 +38,12 @@
 
 	<h1>LOGIN</h1>
 	<form:form id="loginData" modelAttribute="memberVO" >
+	<div class="errors">
+			<ul>
+				<li><form:errors path="email" /></li>
+				<li><form:errors path="password" /></li>
+			</ul>
+		</div>
 	<div>
 		<input type="email" name="email" id="email" placeholder="EMAIL" value="" />
 	</div>

@@ -19,6 +19,7 @@
 
 	<h1>WRITE1</h1>
 	<form:form id="writeData" modelAttribute="articleVO" enctype="multipart/form-data">
+	<input type="hidden" name="token" value="${sessionScope._CSRF_TOKEN_}" />
 	<div>
 		<input type="hidden" name="boardId" id="boardId" value="${boardId}" />
 	</div>
@@ -29,7 +30,7 @@
 		<textarea name="content" id="content" placeholder="CONTENT">${articleVO.content}</textarea>
 	</div>
 	<div>
-		<input type="file" id="file" name="file" placeholder="Choose File"  />
+		<input type="file" id="file" name="file" multiple="multiple" placeholder="Choose File"  />
 	</div>
 	<div>
 		<input type="button" class="sendBtn" value="Send" />

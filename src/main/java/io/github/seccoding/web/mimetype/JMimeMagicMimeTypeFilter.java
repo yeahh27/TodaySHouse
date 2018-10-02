@@ -24,7 +24,7 @@ class JMimeMagicMimeTypeFilter extends ExtensionFilter {
 			MagicMatch match = Magic.getMagicMatch(data);
 			mimeType = match.getMimeType();
 		} catch (MagicParseException | MagicMatchNotFoundException | MagicException | IOException e) {}
-*/
+		*/
 		return mimeType;
 	}
 

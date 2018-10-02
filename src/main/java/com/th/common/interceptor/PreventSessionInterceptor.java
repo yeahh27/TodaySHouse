@@ -6,19 +6,22 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.th.common.session.Session;
+import com.th.member.vo.MemberVO;
+
 
 public class PreventSessionInterceptor extends HandlerInterceptorAdapter {
 
-	/*@Override
+	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		HttpSession session = request.getSession();
-		MemberVO memberVO = (MemberVO)session.getAttribute("_USER_");
+		MemberVO memberVO = (MemberVO)session.getAttribute(Session.MEMBER);
 		
 		if(memberVO != null) {
-			response.sendRedirect("HelloSpring/board/list");
+			response.sendRedirect("TodaysHouse/");
 			return false;
 		}
 		return true;
-	}*/
+	}
 }

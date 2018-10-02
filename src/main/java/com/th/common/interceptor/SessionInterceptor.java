@@ -8,25 +8,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.th.common.session.Session;
+import com.th.member.vo.MemberVO;
+
 
 public class SessionInterceptor extends HandlerInterceptorAdapter {
 	
 	private Logger logger = LoggerFactory.getLogger(SessionInterceptor.class);
 
-	/*@Override
+	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)	// handler ==> Controller
 			throws Exception {
 		
 		HttpSession session = request.getSession();
-		MemberVO member = (MemberVO)session.getAttribute("_USER_");
+		MemberVO member = (MemberVO)session.getAttribute(Session.MEMBER);
 		
 		if(member == null) {
-			response.sendRedirect("/HelloSpring/member/login");
+			response.sendRedirect("/TodaysHouse/member/login");
 			return false;
 		}
 
 		
 		return true;
-	}*/
+	}
 	
 }

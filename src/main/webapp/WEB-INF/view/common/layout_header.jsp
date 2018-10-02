@@ -53,7 +53,6 @@ nav a:hover {
 </style>
 </head>
 <body>
-
 	<div id="wrapper">	<!-- html5에서 새로나온 시멘트태그이고 div를 대체하기 위해서 나온 것 -->
 		<header>
 			<nav>
