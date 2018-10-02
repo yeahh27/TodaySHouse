@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.th.common.session.Session;
 import com.th.common.util.SHA256Util;
+import com.th.member.biz.MemberBiz;
 import com.th.member.dao.MemberDao;
 import com.th.member.vo.MemberVO;
 
@@ -14,74 +15,53 @@ import com.th.member.vo.MemberVO;
 public class MemberServiceImpl implements MemberService {
 
 	@Autowired
-	private MemberDao memberDao;
-	
-	private String getHashedPassword(String salt, String password) {
-		return SHA256Util.getEncrypt(password, salt);
+	private MemberBiz memberBiz;
+
+	@Override
+	public boolean registMember(MemberVO memberVO) {
+		return this.memberBiz.registMember(memberVO);
 	}
 	
 	@Override
-	public boolean registMember(MemberVO memberVO) {
-		String salt = SHA256Util.generateSalt();
-		String password = this.getHashedPassword(salt, memberVO.getPassword());
-
-		memberVO.setPassword(password);
-		memberVO.setSalt(salt);
-		
-		return this.memberDao.insertMember(memberVO) > 0;
+	public boolean isDuplicateEmail(String email) {
+		return this.memberBiz.isDuplicateEmail(email);
 	}
 
 	@Override
 	public boolean loginMember(MemberVO memberVO, HttpSession session) {
-		String salt = this.memberDao.getSaltById(memberVO.getEmail());
-		String password = this.getHashedPassword(salt, memberVO.getPassword());
-		
-		memberVO.setPassword(password);
-		
-		MemberVO loginMemberVO = this.memberDao.selectOneMember(memberVO);
-
-		if(loginMemberVO != null) {
-			session.setAttribute(Session.MEMBER, loginMemberVO);
-		}
-		return loginMemberVO != null;
+		return this.memberBiz.loginMember(memberVO, session);
 	}
-	
+
 	@Override
 	public MemberVO loginMember(MemberVO memberVO) {
-		String salt = this.memberDao.getSaltById(memberVO.getEmail());
-		String password = this.getHashedPassword(salt, memberVO.getPassword());
-		
-		memberVO.setPassword(password);
-		
-		MemberVO loginMemberVO = this.memberDao.selectOneMember(memberVO);
-		
-		return loginMemberVO;
+		return this.memberBiz.loginMember(memberVO);
 	}
 
 	@Override
 	public int updatePoint(String email, int point) {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.memberBiz.updatePoint(email, point);
 	}
 
 	@Override
 	public boolean isBlockUser(String email) {
-		return this.memberDao.isBlockUser(email) > 3;
+		return this.memberBiz.isBlockUser(email);
 	}
 
 	@Override
 	public boolean unblockUser(String email) {
-		return this.memberDao.unblockUser(email);
+		return this.memberBiz.unblockUser(email);
 	}
 
 	@Override
 	public boolean blockUser(String email) {
-		return this.memberDao.blockUser(email);
+		return this.memberBiz.blockUser(email);
 	}
 
 	@Override
 	public boolean increaseLoginFailCount(String email) {
-		return this.memberDao.increaseLoginFailCount(email);
+		return this.memberBiz.increaseLoginFailCount(email);
 	}
+	
+	
 
 }

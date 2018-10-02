@@ -5,47 +5,48 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.th.article.biz.ArticleBiz;
 import com.th.article.dao.ArticleDao;
+import com.th.article.vo.ArticleSearchVO;
 import com.th.article.vo.ArticleVO;
 import com.th.member.vo.MemberVO;
+
+import io.github.seccoding.web.pager.explorer.PageExplorer;
 
 @Service
 public class ArticleServiceImpl implements ArticleService {
 	
 	@Autowired
-	private ArticleDao articleDao;
+	private ArticleBiz articleBiz;
 
 	@Override
 	public boolean createArticle(ArticleVO articleVO) {
-		return this.articleDao.insertArticle(articleVO) > 0;
+		return this.articleBiz.insertArticle(articleVO) > 0;
 	}
 	
 	@Override
-	public List<ArticleVO> readAllArticles() {
-		return this.articleDao.selectAllArticles();
+	public PageExplorer readAllArticles(ArticleSearchVO articleSearchVO) {
+		return this.articleBiz.selectAllArticles(articleSearchVO);
 	}
 
 	@Override
 	public boolean updateArticle(ArticleVO articleVO) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.articleBiz.updateArticle(articleVO) > 0;
+	}
+	
+	@Override
+	public ArticleVO readOneArticle(int boardId, String articleId) {
+		return this.articleBiz.selectOneArticle(boardId, articleId);
 	}
 
 	@Override
 	public ArticleVO readOneArticle(String articleId, MemberVO memberVO) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
-	@Override
-	public ArticleVO readOneArticle(String articleId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public boolean deleteArticle(String articleId) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

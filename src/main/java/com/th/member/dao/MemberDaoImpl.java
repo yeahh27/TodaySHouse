@@ -28,6 +28,11 @@ public class MemberDaoImpl extends SqlSessionDaoSupport implements MemberDao {
 	}
 
 	@Override
+	public int isDuplicateEmail(String email) {
+		return getSqlSession().selectOne("MemberDao.isDuplicateEmail", email);
+	}
+	
+	@Override
 	public MemberVO selectOneMember(MemberVO memberVO) {
 		return getSqlSession().selectOne("MemberDao.selectOneMember", memberVO);
 	}

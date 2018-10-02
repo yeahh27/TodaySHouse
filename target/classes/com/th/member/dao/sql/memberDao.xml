@@ -24,6 +24,12 @@
 		)
   	</insert>
   	
+  	<select id="isDuplicateEmail" parameterType="string" resultType="_int">
+  		SELECT	COUNT(1)
+  		FROM	MEMBERS
+  		WHERE	EMAIL = #{email}
+  	</select>
+  	
   	<select id="selectOneMember" parameterType="MemberVO" resultType="MemberVO">
   		SELECT	EMAIL
   				, NAME

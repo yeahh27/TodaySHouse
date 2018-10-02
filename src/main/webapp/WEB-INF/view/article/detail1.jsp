@@ -1,13 +1,32 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
-	<jsp:include page="/WEB-INF/view/common/menu.jsp" />
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<jsp:include page="/WEB-INF/view/common/layout_header.jsp"/>
 	<h1>DETAIL</h1>
-</body>
-</html>
+
+	<h2>${articleVO.title}
+		<span style="font-size: 10pt">${articleVO.articleId}</span>
+	</h2>	
+	
+	<h3>작성자 : ${articleVO.memberVO.name} (${articleVO.email})</h3>
+	
+	<c:if test="${not empty articleVO.originFileName}">
+		<p>
+			<a href="/TodaysHouse/board/${articleVO.boardId}/download/${articleVO.articleId}">
+				<img src="/TodaysHouse/board/${articleVO.boardId}/download/${articleVO.articleId}" width="120">
+			</a>
+		</p>
+	</c:if>	
+	<div>
+		${articleVO.content }
+	</div>
+	
+	<hr/>
+	
+	<div>
+		<a href="">삭제</a>
+		<a href="/TodaysHouse/board/${articleVO.boardId}">목록</a>
+	</div>
+	
+<jsp:include page="/WEB-INF/view/common/layout_footer.jsp"/>

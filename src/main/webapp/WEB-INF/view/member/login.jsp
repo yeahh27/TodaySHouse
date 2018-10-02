@@ -1,12 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<script src="/TodaysHouse/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+
+<jsp:include page="/WEB-INF/view/common/layout_header.jsp"/>
+
 <script type="text/javascript">
 	$().ready(function() {
 		$(".loginBtn").click(function() {
@@ -25,9 +22,7 @@
 		})
 	})
 </script>
-</head>
-<body>
-	<jsp:include page="/WEB-INF/view/common/menu.jsp" />
+
 	<h1>LOGIN</h1>
 	<form:form id="loginData" modelAttribute="memberVO" >
 	<div>
@@ -40,5 +35,5 @@
 		<input type="button" class="loginBtn" value="로그인" />
 	</div>
 	</form:form>
-</body>
-</html>
+
+<jsp:include page="/WEB-INF/view/common/layout_footer.jsp"/>

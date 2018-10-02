@@ -8,6 +8,8 @@ public interface MemberDao {
 
 	public int insertMember(MemberVO memberVO);
 	
+	public int isDuplicateEmail(String email);
+	
 	public MemberVO selectOneMember(MemberVO memberVO);
 	
 	public int updatePoint(Map<String, Object> param);

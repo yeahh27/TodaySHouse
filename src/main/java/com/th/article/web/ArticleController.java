@@ -2,12 +2,14 @@ package com.th.article.web;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
@@ -21,13 +23,18 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.th.article.service.ArticleService;
+import com.th.article.vo.ArticleSearchVO;
 import com.th.article.vo.ArticleVO;
 import com.th.common.session.Session;
+import com.th.common.web.DownloadUtil;
 import com.th.member.vo.MemberVO;
+
+import io.github.seccoding.web.pager.explorer.PageExplorer;
 
 @Controller
 public class ArticleController {
@@ -40,15 +47,15 @@ public class ArticleController {
 	@Value("${C:/uploadFiles}")
 	private String uploadPath;
 	
-	@GetMapping("/{boardId}/articleWrite")
+	@GetMapping("/board/{boardId}/articleWrite")
 	public String viewArticleWritePage(@PathVariable int boardId) {
 		return "article/write" + boardId;
 	}
 	
-	@PostMapping("/{boardId}/articleWrite")
+	@PostMapping("/board/{boardId}/articleWrite")
 	public ModelAndView doArticleWriteAction(@PathVariable int boardId, @Valid @ModelAttribute ArticleVO articleVO, Errors errors
 													, HttpSession session, HttpServletRequest request) {
-		ModelAndView view = new ModelAndView("redirect:/"+boardId);
+		ModelAndView view = new ModelAndView("redirect:/board/"+boardId);
 
 		// Validation Annotation이 실패했는지 체크
 		if (errors.hasErrors()) {
@@ -99,23 +106,62 @@ public class ArticleController {
 		return view;
 	}
 	
-	@GetMapping("/{boardId}")
-	public ModelAndView viewBoardPage(@PathVariable int boardId) {
+	@RequestMapping("/board/{boardId}")
+	public ModelAndView viewBoardPage(@PathVariable int boardId, @ModelAttribute ArticleSearchVO articleSearchVO, HttpSession session, HttpServletRequest request) {
+		// 전체검색 or 상세 -> 목록 or 글쓰기
+		if(articleSearchVO.getSearchKeyword() == null) {
+			articleSearchVO = (ArticleSearchVO) session.getAttribute(Session.SEARCH);
+			if(articleSearchVO == null) {
+				articleSearchVO = new ArticleSearchVO();
+				articleSearchVO.setPageNo(0);
+			}
+		}
+		
+		articleSearchVO.setBoardId(boardId);
+		PageExplorer pageExplorer = this.articleService.readAllArticles(articleSearchVO);
+
+		logger.info("URL : /board/list, IP : " + request.getRemoteAddr() + ", List Size : " + pageExplorer.getList().size());
+		
+		session.setAttribute(Session.SEARCH, articleSearchVO);
+		
 		ModelAndView view = new ModelAndView("article/list" + boardId);
-		
-		List<ArticleVO> articleList = this.articleService.readAllArticles();
-		
 		view.addObject("boardId", boardId);
-		view.addObject("articleList", articleList);
+		view.addObject("articleList", pageExplorer.getList());
+		view.addObject("pagenation", pageExplorer.make());
+		view.addObject("size", pageExplorer.getTotalCount());
+		view.addObject("articleSearchVO", articleSearchVO);
 		
 		return view;
 	}
 	
-	@GetMapping("/{boardId}/{articleId}")
+	@RequestMapping("/board/{boardId}/init")
+	public String viewBoardListPageForInitiate(@PathVariable int boardId, HttpSession session) {
+		session.removeAttribute(Session.SEARCH);
+		return "redirect:/board/" + boardId;
+	}
+	
+	@GetMapping("/board/{boardId}/{articleId}")
 	public ModelAndView viewArticlePage(@PathVariable int boardId, @PathVariable String articleId) {
 		ModelAndView view = new ModelAndView("article/detail" + boardId);
 		
+		ArticleVO articleVO = this.articleService.readOneArticle(boardId, articleId);
+		view.addObject("articleVO", articleVO);
+
 		return view;
+	}
+	
+	@RequestMapping("/board/{boardId}/download/{articleId}")
+	public void fileDownload(@PathVariable int boardId, @PathVariable String articleId, HttpServletRequest request, HttpServletResponse response) {
+		
+		ArticleVO articleVO = this.articleService.readOneArticle(boardId, articleId);
+		String originFileName = articleVO.getOriginFileName();
+		String fileName = articleVO.getFileName();
+		
+		try {
+			new DownloadUtil(this.uploadPath + File.separator + fileName).download(request, response, originFileName);
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException(e.getMessage(), e);
+		}
 	}
 
 }

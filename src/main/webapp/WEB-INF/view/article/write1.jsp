@@ -2,26 +2,21 @@
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-<script src="/TodaysHouse/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+
+<jsp:include page="/WEB-INF/view/common/layout_header.jsp"/>
+
 <script type="text/javascript">
 	$().ready(function() {
 		$(".sendBtn").click(function() {
 			$("#writeData").attr( {
-				action: "/TodaysHouse/${boardId}/articleWrite",
+				action: "/TodaysHouse/board/${boardId}/articleWrite",
 	            method: "post",
 	            enctype: "multipart/form-data"
 			} ).submit()
 		})
 	})
 </script>
-</head>
-<body>
-	<jsp:include page="/WEB-INF/view/common/menu.jsp" />
+
 	<h1>WRITE1</h1>
 	<form:form id="writeData" modelAttribute="articleVO" enctype="multipart/form-data">
 	<div>
@@ -40,5 +35,5 @@
 		<input type="button" class="sendBtn" value="Send" />
 	</div>
 	</form:form>
-</body>
-</html>
+
+<jsp:include page="/WEB-INF/view/common/layout_footer.jsp"/>

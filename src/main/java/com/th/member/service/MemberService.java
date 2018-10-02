@@ -8,6 +8,8 @@ public interface MemberService {
 
 	public boolean registMember(MemberVO memberVO);
 	
+	public boolean isDuplicateEmail(String email);
+	
 	//public MemberVO loginMember(MemberVO memberVO, HttpSession session);
 	public boolean loginMember(MemberVO memberVO, HttpSession session);
 	public MemberVO loginMember(MemberVO memberVO);

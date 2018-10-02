@@ -1,4 +1,4 @@
-package com.th.common;
+package com.th.common.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

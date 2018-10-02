@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.th.member.service.MemberService;
@@ -45,6 +46,18 @@ public class MemberController {
 		
 		this.memberService.registMember(memberVO);
 		result.put("status", true);
+		
+		return result;
+	}
+	
+	@PostMapping("/member/check/duplicate")
+	@ResponseBody
+	public Map<String, Object> doCheckDuplicateEmail(@RequestParam String email) {
+		boolean isDuplicate = this.memberService.isDuplicateEmail(email);
+		
+		Map<String, Object> result = new HashMap<>();
+		result.put("status", "OK");
+		result.put("duplicated", isDuplicate);
 		
 		return result;
 	}

@@ -55,7 +55,53 @@
   		
   	</resultMap>
   	
-  	<select id="selectAllArticles" resultMap="articleResultMap">
+  	<select id="selectAllArticles" parameterType="ArticleSearchVO" resultMap="articleResultMap">
+  		SELECT	*
+  		FROM	(
+  					SELECT	A.*
+  							, ROWNUM RNUM
+  					FROM	(
+  								SELECT	A.BOARD_ID
+						  				, A.ARTICLE_ID
+						  				, A.TITLE
+						  				, A.CONTENT
+						  				, A.EMAIL A_EMAIL
+						  				, A.ORIGIN_FILE_NAME
+						  				, A.FILE_NAME
+						  				, A.REG_DATE
+						  				, A.MODIFY_DATE
+						  				, A.VIEW_COUNT
+						  				, A.RECOMMEND
+						  				, A.REPORT
+						  				, M.EMAIL M_EMAIL
+						  				, M.NAME
+						  				, M.POINT
+						  		FROM	ARTICLES A
+						  				, MEMBERS M
+						  		WHERE	A.EMAIL = M.EMAIL
+						  		AND 	A.BOARD_ID = #{boardId}
+						  		<if test="searchKeyword != null and searchKeyword != ''" >
+								AND		TITLE LIKE '%' || #{searchKeyword} || '%'
+								</if>
+								ORDER	BY ARTICLE_ID DESC
+  							) A
+  					WHERE	ROWNUM <![CDATA[<=]]> #{endRow} 
+  				)
+  		WHERE	RNUM >= #{startRow}
+  	</select>
+  	
+  	<select id="selectAllArticlesCount" parameterType="ArticleSearchVO" resultType="_int">
+  		SELECT	COUNT(1)
+  		FROM	ARTICLES A
+  				, MEMBERS M
+  		WHERE	A.EMAIL = M.EMAIL
+  		AND		A.BOARD_ID = #{boardId}
+  		<if test="searchKeyword != null and searchKeyword != ''">
+  		AND		TITLE LIKE '%' || #{searchKeyword} || '%'
+  		</if>
+  	</select>
+  	
+  	<select id="selectOneArticle" parameterType="map" resultMap="articleResultMap">
   		SELECT	A.BOARD_ID
   				, A.ARTICLE_ID
   				, A.TITLE
@@ -74,21 +120,8 @@
   		FROM	ARTICLES A
   				, MEMBERS M
   		WHERE	A.EMAIL = M.EMAIL
+  		AND 	A.BOARD_ID = #{boardId}
+  		AND		A.ARTICLE_ID = #{articleId}
   	</select>
   	
-  	<!-- <select id="selectAllArticles" resultType="ArticleVO">
-  		SELECT	A.BOARD_ID
-  				, A.ARTICLE_ID
-  				, A.TITLE
-  				, A.CONTENT
-  				, A.EMAIL A_EMAIL
-  				, A.ORIGIN_FILE_NAME
-  				, A.FILE_NAME
-  				, A.REG_DATE
-  				, A.MODIFY_DATE
-  				, A.VIEW_COUNT
-  				, A.RECOMMEND
-  				, A.REPORT
-  		FROM	ARTICLES A
-  	</select> -->
   </mapper>

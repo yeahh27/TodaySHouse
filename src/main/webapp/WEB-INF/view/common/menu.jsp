@@ -48,7 +48,7 @@ nav a:hover {
 <nav>
 <ul>
 	<li><a href="/TodaysHouse/">Home</a></li>
-	<li><a href="/TodaysHouse/1/">List1</a></li>
+	<li><a href="/TodaysHouse/board/1/">List1</a></li>
 	<c:choose>
 		<c:when test="${empty sessionScope._MEMBER_.name}">
 			<li><a href="/TodaysHouse/member/login">Login</a></li>

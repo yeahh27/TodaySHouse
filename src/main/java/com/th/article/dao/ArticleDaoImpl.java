@@ -1,6 +1,7 @@
 package com.th.article.dao;
 
 import java.util.List;
+import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import com.th.article.vo.ArticleSearchVO;
 import com.th.article.vo.ArticleVO;
 
 @Repository
@@ -29,18 +31,23 @@ public class ArticleDaoImpl extends SqlSessionDaoSupport implements ArticleDao {
 	}
 	
 	@Override
-	public List<ArticleVO> selectAllArticles() {
-		return getSqlSession().selectList("ArticleDao.selectAllArticles");
+	public List<ArticleVO> selectAllArticles(ArticleSearchVO articleSearchVO) {
+		return getSqlSession().selectList("ArticleDao.selectAllArticles", articleSearchVO);
 	}
-
+	
+	@Override
+	public int selectAllArticlesCount(ArticleSearchVO articleSearchVO) {
+		return getSqlSession().selectOne("ArticleDao.selectAllArticlesCount", articleSearchVO);
+	}
+	
+	@Override
+	public ArticleVO selectOneArticle(Map<String, Object> param) {
+		return getSqlSession().selectOne("ArticleDao.selectOneArticle", param);
+	}
+	
 	@Override
 	public int updateArticle(ArticleVO articleVO) {
 		return 0;
-	}
-
-	@Override
-	public ArticleVO selectOneArticle(String articleId) {
-		return null;
 	}
 
 	@Override
